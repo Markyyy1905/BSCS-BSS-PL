@@ -135,7 +135,7 @@ class Account {
 
 // ========== USER CLASS ==========
 class User {
-    constructor(userId, username, password) {
+    constructor(userId, username, password, profile = {}) {
         if (!userId || !username || !password) {
             throw new Error('All fields required');
         }
@@ -143,12 +143,20 @@ class User {
         this._userId = userId;
         this._username = username;
         this._password = password; // Plaintext for demo
+        this._fullName = profile.fullName || username;
+        this._phoneNumber = profile.phoneNumber || username;
+        this._address = profile.address || '';
+        this._gmail = profile.gmail || '';
         this._account = null; // Each user has ONE account
         this._createdDate = new Date();
     }
 
     get userId() { return this._userId; }
     get username() { return this._username; }
+    get fullName() { return this._fullName; }
+    get phoneNumber() { return this._phoneNumber; }
+    get address() { return this._address; }
+    get gmail() { return this._gmail; }
     get account() { return this._account; }
     get createdDate() { return this._createdDate; }
 
@@ -170,13 +178,22 @@ class User {
             userId: this._userId,
             username: this._username,
             password: this._password,
+            fullName: this._fullName,
+            phoneNumber: this._phoneNumber,
+            address: this._address,
+            gmail: this._gmail,
             account: this._account ? this._account.toJSON() : null,
             createdDate: this._createdDate
         };
     }
 
     static fromJSON(data) {
-        const user = new User(data.userId, data.username, data.password);
+        const user = new User(data.userId, data.username, data.password, {
+            fullName: data.fullName,
+            phoneNumber: data.phoneNumber,
+            address: data.address,
+            gmail: data.gmail
+        });
         user._createdDate = new Date(data.createdDate);
         if (data.account) {
             user._account = Account.fromJSON(data.account);
@@ -200,21 +217,57 @@ class Bank {
     /**
      * Register a new user (create bank account).
      */
-    register(username, password) {
-        if (!username || !password) {
-            throw new Error('Username and password required');
+    register(userData, password) {
+        let username = '';
+        let fullName = '';
+        let phoneNumber = '';
+        let address = '';
+        let gmail = '';
+        let finalPassword = password;
+
+        if (typeof userData === 'object' && userData !== null) {
+            fullName = (userData.fullName || '').trim();
+            phoneNumber = (userData.phoneNumber || '').trim();
+            address = (userData.address || '').trim();
+            gmail = (userData.gmail || '').trim().toLowerCase();
+            finalPassword = userData.password;
+            username = phoneNumber;
+
+            if (!fullName || !phoneNumber || !gmail || !finalPassword) {
+                throw new Error('Name, number, gmail, and password are required');
+            }
+
+            if (!gmail.endsWith('@gmail.com')) {
+                throw new Error('Please enter a valid Gmail address');
+            }
+        } else {
+            username = userData;
+            if (!username || !finalPassword) {
+                throw new Error('Username and password required');
+            }
+            fullName = username;
+            phoneNumber = username;
         }
 
         if (this._users.some(u => u.username === username)) {
-            throw new Error('Username already exists');
+            throw new Error('Number already exists');
         }
 
-        if (password.length < 3) {
+        if (gmail && this._users.some(u => (u.gmail || '').toLowerCase() === gmail)) {
+            throw new Error('Gmail already exists');
+        }
+
+        if (finalPassword.length < 3) {
             throw new Error('Password must be at least 3 characters');
         }
 
         const userId = `user_${this._nextUserId++}`;
-        const user = new User(userId, username, password);
+        const user = new User(userId, username, finalPassword, {
+            fullName,
+            phoneNumber,
+            address,
+            gmail
+        });
         
         // Create account for user (GCash-style: one account per user)
         const accountNumber = this._generateAccountNumber();
@@ -227,8 +280,13 @@ class Bank {
     /**
      * Login user.
      */
-    login(username, password) {
-        const user = this._users.find(u => u.username === username);
+    login(identifier, password) {
+        const normalized = (identifier || '').trim().toLowerCase();
+        const user = this._users.find(u =>
+            u.username === identifier ||
+            u.phoneNumber === identifier ||
+            ((u.gmail || '').toLowerCase() === normalized)
+        );
         
         if (!user) {
             throw new Error('User not found');
@@ -359,7 +417,11 @@ class Bank {
         if (!user || !user.account) {
             throw new Error(`User "${username}" not found`);
         }
-        return { username: user.username, accountNumber: user.account.accountNumber };
+        return {
+            username: user.username,
+            fullName: user.fullName,
+            accountNumber: user.account.accountNumber
+        };
     }
 
     _generateAccountNumber() {

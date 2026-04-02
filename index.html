@@ -3,114 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bank - Money Transfer</title>
+    <title>Tofu Bank</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50">
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100">
+    <div class="fixed -top-40 -left-32 w-96 h-96 rounded-full bg-blue-500/20 blur-3xl pointer-events-none"></div>
+    <div class="fixed -bottom-36 -right-24 w-96 h-96 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none"></div>
 
-    <div id="authScreen" class="min-h-screen flex items-center justify-center px-4">
-        <div class="w-full max-w-md bg-white rounded-lg shadow p-8">
-            <h1 class="text-2xl font-bold text-center text-blue-600 mb-8">Bank</h1>
+    <div id="toastContainer" class="fixed top-4 left-1/2 -translate-x-1/2 md:left-auto md:right-4 md:translate-x-0 z-[100] space-y-2 w-[92vw] max-w-sm"></div>
 
-            <div class="flex gap-2 mb-6">
-                <button id="loginTabBtn" class="flex-1 py-2 px-4 bg-blue-600 text-white rounded font-semibold text-sm">Login</button>
-                <button id="registerTabBtn" class="flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded font-semibold text-sm hover:bg-gray-300">Register</button>
-            </div>
+    <div id="authScreen" class="relative min-h-screen bg-[#f0f2f5] text-slate-900">
+        <div class="max-w-6xl mx-auto min-h-screen px-4 py-10 grid grid-cols-1 lg:grid-cols-2 items-center gap-10">
+            <section class="text-center lg:text-left">
+                <h1 class="text-5xl md:text-6xl font-extrabold text-blue-600 leading-tight">Tofu Bank</h1>
+                <p class="mt-4 text-xl text-slate-700 max-w-xl mx-auto lg:mx-0">Manage your money securely, transfer instantly, and track every transaction in one place.</p>
+            </section>
 
-            <form id="loginForm" class="space-y-3">
-                <input id="loginUsername" type="text" placeholder="Username" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500">
-                <input id="loginPassword" type="password" placeholder="Password" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500">
-                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded font-semibold text-sm hover:bg-blue-700">Login</button>
-                <div id="loginAlert" class="hidden"></div>
-            </form>
+            <section class="mx-auto w-full max-w-md">
+                <div class="rounded-xl bg-white p-6 md:p-7 border border-slate-300">
+                    <div class="relative grid grid-cols-2 gap-1 mb-6 bg-slate-100 rounded-xl p-1">
+                        <div id="authTabIndicator" class="absolute top-1 left-1 w-[calc(50%-0.25rem)] h-[calc(100%-0.5rem)] rounded-lg bg-blue-600 transition-all duration-300"></div>
+                        <button id="loginTabBtn" class="relative z-10 py-2 px-4 text-white rounded-lg font-semibold text-sm transition">Login</button>
+                        <button id="registerTabBtn" class="relative z-10 py-2 px-4 text-slate-600 rounded-lg font-semibold text-sm transition">Register</button>
+                    </div>
 
-            <form id="registerForm" class="space-y-3 hidden">
-                <input id="registerUsername" type="text" placeholder="Username" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500">
-                <input id="registerPassword" type="password" placeholder="Password" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500">
-                <input id="registerPasswordConfirm" type="password" placeholder="Confirm Password" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500">
-                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded font-semibold text-sm hover:bg-blue-700">Register</button>
-                <div id="registerAlert" class="hidden"></div>
-            </form>
-        </div>
-    </div>
+                    <form id="loginForm" class="space-y-4">
+                        <div>
+                            <input id="loginUsername" type="text" placeholder="Phone number or Gmail" class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <input id="loginPassword" type="password" placeholder="Password" class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold text-sm hover:bg-blue-700 transition">Login</button>
+                        <div id="loginAlert" class="hidden"></div>
+                    </form>
 
-    <div id="dashboardScreen" class="hidden min-h-screen bg-gray-50 pb-16">
-        <div class="bg-blue-600 text-white p-6">
-            <div class="max-w-md mx-auto">
-                <div class="flex justify-between items-center mb-4">
-                    <h1 class="text-2xl font-bold">Wallet</h1>
-                    <button id="logoutBtn" class="px-4 py-1 bg-red-500 rounded text-sm font-semibold hover:bg-red-600">Logout</button>
+                    <form id="registerForm" class="space-y-3 hidden">
+                        <div>
+                            <input id="registerFullName" type="text" placeholder="Full Name" class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <input id="registerPhoneNumber" type="text" placeholder="Phone Number" class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <input id="registerAddress" type="text" placeholder="Address (Optional)" class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <input id="registerGmail" type="email" placeholder="Gmail" class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <input id="registerPassword" type="password" placeholder="Password" class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <input id="registerPasswordConfirm" type="password" placeholder="Confirm Password" class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                        </div>
+                        <button type="submit" class="w-full bg-emerald-600 text-white py-2.5 rounded-lg font-semibold text-sm hover:bg-emerald-700 transition">Create Account</button>
+                        <div id="registerAlert" class="hidden"></div>
+                    </form>
                 </div>
-                <p class="text-blue-100 text-sm">Hi, <span id="username" class="font-semibold"></span></p>
-            </div>
-        </div>
-
-        <div class="max-w-md mx-auto px-4 mt-6">
-            <div class="bg-white rounded-lg shadow p-6 mb-6 border-t-4 border-blue-600">
-                <p class="text-gray-600 text-sm">Total Balance</p>
-                <p class="text-4xl font-bold text-blue-600">$<span id="balance">0.00</span></p>
-                <p class="text-gray-500 text-xs mt-2"><span id="accountTypeDisplay"></span></p>
-                <p class="text-gray-500 text-xs mt-2">Account: <span id="accountNumber" class="font-mono text-gray-700"></span></p>
-            </div>
-
-            <div class="grid grid-cols-3 gap-3 mb-8">
-                <button id="depositBtn" class="bg-green-500 text-white py-3 rounded font-semibold text-sm hover:bg-green-600">Deposit</button>
-                <button id="withdrawBtn" class="bg-orange-500 text-white py-3 rounded font-semibold text-sm hover:bg-orange-600">Withdraw</button>
-                <button id="transferBtn" class="bg-indigo-500 text-white py-3 rounded font-semibold text-sm hover:bg-indigo-600">Transfer</button>
-            </div>
-
-            <div class="bg-white rounded-lg shadow p-6">
-                <h2 class="font-bold text-gray-800 mb-4 text-sm">Recent Transactions</h2>
-                <div id="transactionList" class="space-y-3"></div>
-                <p id="noTransactions" class="text-gray-500 text-sm text-center py-4">No transactions yet</p>
-            </div>
+            </section>
         </div>
     </div>
 
-    <div id="depositModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-end z-50">
-        <div class="w-full bg-white rounded-t-lg p-6 max-h-96 overflow-y-auto">
-            <h2 class="text-lg font-bold text-gray-800 mb-4">Deposit Money</h2>
+    <div id="dashboardScreen" class="hidden min-h-screen relative">
+        <div id="sidebarBackdrop" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 hidden md:hidden"></div>
+
+        <aside id="appSidebar" class="fixed top-4 bottom-4 left-4 z-40 w-64 rounded-3xl bg-slate-800/40 backdrop-blur-lg border border-white/10 shadow-lg shadow-blue-500/10 transform -translate-x-[120%] md:translate-x-0 transition-transform duration-300">
+            <div class="h-20 px-6 flex items-center border-b border-white/10">
+                <h2 class="text-2xl font-bold text-white">Tofu Bank</h2>
+            </div>
+            <nav class="p-4 space-y-2 text-sm font-medium">
+                <button id="navDashboard" type="button" class="w-full text-left rounded-xl bg-blue-500/20 text-blue-300 px-4 py-3 border border-blue-400/20">Dashboard</button>
+                <button id="navTransactions" type="button" class="w-full text-left rounded-xl text-slate-300 hover:bg-white/10 px-4 py-3 transition">Transaction History</button>
+                <button id="navProfile" type="button" class="w-full text-left rounded-xl text-slate-300 hover:bg-white/10 px-4 py-3 transition">Profile</button>
+            </nav>
+        </aside>
+
+        <main class="min-h-screen md:ml-72 p-4 md:p-6 space-y-6">
+            <header class="rounded-2xl bg-slate-800/40 backdrop-blur-lg border border-white/10 px-4 md:px-6 py-4 flex items-center justify-between shadow-lg shadow-blue-500/10">
+                <div class="flex items-center gap-3">
+                    <button id="mobileMenuBtn" class="md:hidden p-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                    <h1 class="text-lg md:text-xl font-semibold text-white">Dashboard</h1>
+                </div>
+                <div class="flex items-center gap-3">
+                    <p class="text-sm text-slate-300 hidden sm:block">Hi, <span id="username" class="font-semibold text-white"></span></p>
+                    <button id="logoutBtn" class="px-4 py-2 rounded-xl bg-red-500/80 border border-red-400/40 text-white text-sm font-semibold hover:bg-red-500 transition">Logout</button>
+                </div>
+            </header>
+
+            <section id="dashboardSection" class="space-y-6">
+                <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="rounded-3xl bg-slate-800/40 backdrop-blur-lg border border-white/10 p-5 shadow-lg shadow-blue-500/10 hover:-translate-y-0.5 transition">
+                        <p class="text-xs uppercase tracking-wide text-slate-300">Balance</p>
+                        <p class="mt-2 text-4xl font-bold text-white">$<span id="balance">0.00</span></p>
+                        <p class="text-xs text-slate-300 mt-2"><span id="accountTypeDisplay"></span></p>
+                        <p class="text-xs text-slate-400 mt-1">Account: <span id="accountNumber" class="font-mono text-slate-200"></span></p>
+                    </div>
+                    <div class="rounded-3xl bg-slate-800/40 backdrop-blur-lg border border-white/10 p-5 shadow-lg shadow-emerald-500/10 hover:-translate-y-0.5 transition">
+                        <p class="text-xs uppercase tracking-wide text-slate-300">Total Deposits</p>
+                        <p class="mt-2 text-3xl font-bold text-emerald-400">$<span id="totalDeposits">0.00</span></p>
+                        <p class="text-xs text-slate-400 mt-2">Money in</p>
+                    </div>
+                    <div class="rounded-3xl bg-slate-800/40 backdrop-blur-lg border border-white/10 p-5 shadow-lg shadow-red-500/10 hover:-translate-y-0.5 transition">
+                        <p class="text-xs uppercase tracking-wide text-slate-300">Total Withdrawals</p>
+                        <p class="mt-2 text-3xl font-bold text-red-400">$<span id="totalWithdrawals">0.00</span></p>
+                        <p class="text-xs text-slate-400 mt-2">Money out</p>
+                    </div>
+                </section>
+
+                <section class="rounded-3xl bg-slate-800/40 backdrop-blur-lg border border-white/10 p-4 md:p-6 shadow-lg shadow-blue-500/10">
+                    <h2 class="text-base font-semibold mb-3 text-white">Balance Trend</h2>
+                    <div class="h-56">
+                        <canvas id="balanceChartCanvas"></canvas>
+                    </div>
+                </section>
+
+                <section class="rounded-3xl bg-slate-800/40 backdrop-blur-lg border border-white/10 p-4 md:p-6 shadow-lg shadow-blue-500/10 hidden md:block">
+                    <h2 class="text-base font-semibold mb-4 text-white">Quick Actions</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <button id="depositBtn" class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white py-2.5 rounded-xl font-semibold text-sm hover:scale-105 hover:shadow-lg hover:shadow-emerald-500/30 active:scale-95 transition">Deposit</button>
+                        <button id="withdrawBtn" class="bg-gradient-to-r from-red-500 to-red-600 text-white py-2.5 rounded-xl font-semibold text-sm hover:scale-105 hover:shadow-lg hover:shadow-red-500/30 active:scale-95 transition">Withdraw</button>
+                        <button id="transferBtn" class="bg-gradient-to-r from-blue-500 to-blue-700 text-white py-2.5 rounded-xl font-semibold text-sm hover:scale-105 hover:shadow-lg hover:shadow-blue-500/30 active:scale-95 transition">Transfer</button>
+                    </div>
+                </section>
+            </section>
+
+            <section id="transactionsSection" class="hidden rounded-3xl bg-slate-800/40 backdrop-blur-lg border border-white/10 p-4 md:p-6 shadow-lg shadow-blue-500/10">
+                <h2 class="text-base font-semibold mb-4 text-white">Transaction History Notifications</h2>
+                <div id="transactionList" class="space-y-3"></div>
+                <p id="noTransactions" class="text-slate-300 text-sm text-center py-6">No transactions yet</p>
+            </section>
+
+            <section id="profileSection" class="hidden rounded-3xl bg-slate-800/40 backdrop-blur-lg border border-white/10 p-4 md:p-6 shadow-lg shadow-blue-500/10">
+                <h2 class="text-base font-semibold mb-4 text-white">Profile</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div class="rounded-2xl bg-white/5 border border-white/10 p-4">
+                        <p class="text-slate-400">Full Name</p>
+                        <p id="profileFullName" class="text-white font-semibold mt-1">-</p>
+                    </div>
+                    <div class="rounded-2xl bg-white/5 border border-white/10 p-4">
+                        <p class="text-slate-400">Phone Number</p>
+                        <p id="profilePhone" class="text-white font-semibold mt-1">-</p>
+                    </div>
+                    <div class="rounded-2xl bg-white/5 border border-white/10 p-4">
+                        <p class="text-slate-400">Gmail</p>
+                        <p id="profileGmail" class="text-white font-semibold mt-1">-</p>
+                    </div>
+                    <div class="rounded-2xl bg-white/5 border border-white/10 p-4">
+                        <p class="text-slate-400">Address</p>
+                        <p id="profileAddress" class="text-white font-semibold mt-1">-</p>
+                    </div>
+                    <div class="rounded-2xl bg-white/5 border border-white/10 p-4">
+                        <p class="text-slate-400">User ID</p>
+                        <p id="profileUserId" class="text-white font-semibold mt-1">-</p>
+                    </div>
+                    <div class="rounded-2xl bg-white/5 border border-white/10 p-4">
+                        <p class="text-slate-400">Joined</p>
+                        <p id="profileCreated" class="text-white font-semibold mt-1">-</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <div class="md:hidden fixed right-5 bottom-5 z-50">
+            <div id="fabActions" class="hidden mb-3 space-y-2">
+                <button id="fabDepositBtn" class="w-full px-4 py-2 rounded-xl bg-emerald-500 text-white text-sm font-semibold shadow-lg shadow-emerald-500/30">Deposit</button>
+                <button id="fabWithdrawBtn" class="w-full px-4 py-2 rounded-xl bg-red-500 text-white text-sm font-semibold shadow-lg shadow-red-500/30">Withdraw</button>
+                <button id="fabTransferBtn" class="w-full px-4 py-2 rounded-xl bg-blue-600 text-white text-sm font-semibold shadow-lg shadow-blue-500/30">Transfer</button>
+            </div>
+            <button id="fabToggle" class="h-14 w-14 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 text-white text-2xl font-bold shadow-lg shadow-blue-500/30">+</button>
+        </div>
+    </div>
+
+    <div id="depositModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-end md:items-center justify-center z-50 px-0 md:px-4">
+        <div class="w-full md:max-w-md rounded-t-3xl md:rounded-3xl bg-slate-800/70 backdrop-blur-xl border border-white/10 p-6 max-h-[90vh] overflow-y-auto shadow-lg shadow-blue-500/20 opacity-0 scale-95 transition-all duration-200">
+            <h2 class="text-lg font-bold text-white mb-4">Deposit Money</h2>
             <form id="depositForm" class="space-y-3">
-                <input id="depositAmount" type="number" placeholder="Amount" step="0.01" min="0" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500">
+                <div>
+                    <label class="block text-sm text-slate-200 mb-1">Amount</label>
+                    <input id="depositAmount" type="number" placeholder="Enter amount" step="0.01" min="0" class="w-full rounded-xl bg-white/10 border border-white/20 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500/40 outline-none">
+                </div>
                 <div class="flex gap-2">
-                    <button type="submit" class="flex-1 bg-green-500 text-white py-2 rounded font-semibold text-sm hover:bg-green-600">Deposit</button>
-                    <button type="button" onclick="document.getElementById('depositModal').classList.add('hidden')" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded font-semibold text-sm">Cancel</button>
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white py-2.5 rounded-xl font-semibold text-sm hover:scale-105 active:scale-95 transition">Deposit</button>
+                    <button type="button" onclick="window.closeModal('depositModal')" class="flex-1 bg-white/10 border border-white/20 text-slate-100 py-2.5 rounded-xl font-semibold text-sm hover:bg-white/20 transition">Cancel</button>
                 </div>
                 <div id="depositAlert" class="hidden"></div>
             </form>
         </div>
     </div>
 
-    <div id="withdrawModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-end z-50">
-        <div class="w-full bg-white rounded-t-lg p-6 max-h-96 overflow-y-auto">
-            <h2 class="text-lg font-bold text-gray-800 mb-4">Withdraw Money</h2>
+    <div id="withdrawModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-end md:items-center justify-center z-50 px-0 md:px-4">
+        <div class="w-full md:max-w-md rounded-t-3xl md:rounded-3xl bg-slate-800/70 backdrop-blur-xl border border-white/10 p-6 max-h-[90vh] overflow-y-auto shadow-lg shadow-blue-500/20 opacity-0 scale-95 transition-all duration-200">
+            <h2 class="text-lg font-bold text-white mb-4">Withdraw Money</h2>
             <form id="withdrawForm" class="space-y-3">
-                <input id="withdrawAmount" type="number" placeholder="Amount" step="0.01" min="0" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500">
+                <div>
+                    <label class="block text-sm text-slate-200 mb-1">Amount</label>
+                    <input id="withdrawAmount" type="number" placeholder="Enter amount" step="0.01" min="0" class="w-full rounded-xl bg-white/10 border border-white/20 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500/40 outline-none">
+                </div>
                 <div class="flex gap-2">
-                    <button type="submit" class="flex-1 bg-orange-500 text-white py-2 rounded font-semibold text-sm hover:bg-orange-600">Withdraw</button>
-                    <button type="button" onclick="document.getElementById('withdrawModal').classList.add('hidden')" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded font-semibold text-sm">Cancel</button>
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-red-500 to-red-600 text-white py-2.5 rounded-xl font-semibold text-sm hover:scale-105 active:scale-95 transition">Withdraw</button>
+                    <button type="button" onclick="window.closeModal('withdrawModal')" class="flex-1 bg-white/10 border border-white/20 text-slate-100 py-2.5 rounded-xl font-semibold text-sm hover:bg-white/20 transition">Cancel</button>
                 </div>
                 <div id="withdrawAlert" class="hidden"></div>
             </form>
         </div>
     </div>
 
-    <div id="transferModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-end z-50">
-        <div class="w-full bg-white rounded-t-lg p-6 max-h-96 overflow-y-auto">
-            <h2 class="text-lg font-bold text-gray-800 mb-4">Transfer Money</h2>
+    <div id="transferModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden items-end md:items-center justify-center z-50 px-0 md:px-4">
+        <div class="w-full md:max-w-md rounded-t-3xl md:rounded-3xl bg-slate-800/70 backdrop-blur-xl border border-white/10 p-6 max-h-[90vh] overflow-y-auto shadow-lg shadow-blue-500/20 opacity-0 scale-95 transition-all duration-200">
+            <h2 class="text-lg font-bold text-white mb-4">Transfer Money</h2>
             <form id="transferForm" class="space-y-3">
-                <input id="transferToUsername" type="text" placeholder="Recipient username" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500">
-                <div id="transferToInfo" class="hidden p-2 bg-green-50 text-green-700 text-sm rounded">Found user: <span id="transferToName"></span></div>
-                <input id="transferAmount" type="number" placeholder="Amount" step="0.01" min="0" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500">
+                <div>
+                    <label class="block text-sm text-slate-200 mb-1">Recipient Number</label>
+                    <input id="transferToUsername" type="text" placeholder="09XXXXXXXXX" class="w-full rounded-xl bg-white/10 border border-white/20 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500/40 outline-none">
+                </div>
+                <div id="transferToInfo" class="hidden p-2.5 rounded-xl bg-emerald-500/20 border border-emerald-400/20 text-emerald-300 text-sm">Found user: <span id="transferToName"></span></div>
+                <div>
+                    <label class="block text-sm text-slate-200 mb-1">Amount</label>
+                    <input id="transferAmount" type="number" placeholder="Enter amount" step="0.01" min="0" class="w-full rounded-xl bg-white/10 border border-white/20 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500/40 outline-none">
+                </div>
                 <div class="flex gap-2">
-                    <button type="submit" class="flex-1 bg-indigo-500 text-white py-2 rounded font-semibold text-sm hover:bg-indigo-600">Transfer</button>
-                    <button type="button" onclick="document.getElementById('transferModal').classList.add('hidden')" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded font-semibold text-sm">Cancel</button>
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-blue-500 to-blue-700 text-white py-2.5 rounded-xl font-semibold text-sm hover:scale-105 active:scale-95 transition">Send</button>
+                    <button type="button" onclick="window.closeModal('transferModal')" class="flex-1 bg-white/10 border border-white/20 text-slate-100 py-2.5 rounded-xl font-semibold text-sm hover:bg-white/20 transition">Cancel</button>
                 </div>
                 <div id="transferAlert" class="hidden"></div>
             </form>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/classes.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/app.js"></script>
